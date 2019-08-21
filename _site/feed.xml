@@ -5,8 +5,8 @@
     <description></description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Wed, 21 Aug 2019 19:40:51 -0300</pubDate>
-    <lastBuildDate>Wed, 21 Aug 2019 19:40:51 -0300</lastBuildDate>
+    <pubDate>Wed, 21 Aug 2019 20:52:04 -0300</pubDate>
+    <lastBuildDate>Wed, 21 Aug 2019 20:52:04 -0300</lastBuildDate>
     <generator>Jekyll v3.6.3</generator>
 
     
@@ -96,6 +96,146 @@
         <guid isPermaLink="true">http://localhost:4000/2019/08/21/parsimony-with-activerecord-callbacks/</guid>
       </item>
     
+      <item>
+        <title>Optimizing email CSS on rails with gem premailer</title>
+        <description>&lt;p&gt;There are a few concerns when you develop an email marketing: use tables, take
+care with the size of the images, send forms, pay attention at the compatibility
+with older browsers or devices and avoid some tags, for example.&lt;/p&gt;
+
+&lt;p&gt;Resuming, in email clients the HTML is changed by a pre-processor before it gets
+rendered, making a few changes which it worth to be aware of&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Remove or change HTML tags&lt;/li&gt;
+  &lt;li&gt;Remove or change CSS&lt;/li&gt;
+  &lt;li&gt;Change the entire structure of the document&lt;/li&gt;
+  &lt;li&gt;Remove the whole javascript&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Taking &lt;code class=&quot;highlighter-rouge&quot;&gt;gmail&lt;/code&gt; as example, it removs any tag &lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;lt;link&amp;gt;&lt;/code&gt; or &lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;lt;style&amp;gt;&lt;/code&gt; and change
+the entire structure of the document, this force us to write code like this&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-html5&quot;&gt;&amp;lt;table id=&quot;customers&quot; style=&quot;font-family: 'Trebuchet MS', Arial; border-collapse: collapse; width: 100%;&quot;&amp;gt;
+  &amp;lt;tbody&amp;gt;
+    &amp;lt;tr style=&quot;background-color: #f2f2f2;&quot;&amp;gt;
+      &amp;lt;th style=&quot;text-align: left; background-color: #4caf50; color: white; border: 1px solid #ddd; padding: 8px;&quot;&amp;gt;Company&amp;lt;/th&amp;gt;
+      &amp;lt;th style=&quot;text-align: left; background-color: #4caf50; color: white; border: 1px solid #ddd; padding: 8px;&quot;&amp;gt;Contact&amp;lt;/th&amp;gt;
+      &amp;lt;th style=&quot;text-align: left; background-color: #4caf50; color: white; border: 1px solid #ddd; padding: 8px;&quot;&amp;gt;Country&amp;lt;/th&amp;gt;
+    &amp;lt;/tr&amp;gt;
+    &amp;lt;tr style=&quot;background-color: #f2f2f2;&quot;&amp;gt;
+      &amp;lt;td style=&quot;border: 1px solid #ddd; padding: 8px;&quot;&amp;gt;Alfreds Futterkiste&amp;lt;/td&amp;gt;
+      &amp;lt;td style=&quot;border: 1px solid #ddd; padding: 8px;&quot;&amp;gt;Maria Anders&amp;lt;/td&amp;gt;
+      &amp;lt;td style=&quot;border: 1px solid #ddd; padding: 8px;&quot;&amp;gt;Germany&amp;lt;/td&amp;gt;
+    &amp;lt;/tr&amp;gt;
+    &amp;lt;tr&amp;gt;
+      &amp;lt;td style=&quot;border: 1px solid #ddd; padding: 8px;&quot;&amp;gt;Berglunds snabbköp&amp;lt;/td&amp;gt;
+      &amp;lt;td style=&quot;border: 1px solid #ddd; padding: 8px;&quot;&amp;gt;Christina Berglund&amp;lt;/td&amp;gt;
+      &amp;lt;td style=&quot;border: 1px solid #ddd; padding: 8px;&quot;&amp;gt;Sweden&amp;lt;/td&amp;gt;
+    &amp;lt;/tr&amp;gt;
+    &amp;lt;tr style=&quot;background-color: #f2f2f2;&quot;&amp;gt;
+      &amp;lt;td style=&quot;border: 1px solid #ddd; padding: 8px;&quot;&amp;gt;Centro comercial Moctezuma&amp;lt;/td&amp;gt;
+      &amp;lt;td style=&quot;border: 1px solid #ddd; padding: 8px;&quot;&amp;gt;Francisco Chang&amp;lt;/td&amp;gt;
+      &amp;lt;td style=&quot;border: 1px solid #ddd; padding: 8px;&quot;&amp;gt;Mexico&amp;lt;/td&amp;gt;
+    &amp;lt;/tr&amp;gt;
+  &amp;lt;/tbody&amp;gt;
+&amp;lt;/table&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The problem is that it ruins the legibility and maintenance of the code,
+just imagine a scenario a little bit more complex and the need of change the style
+of a class, the result: the pandora’s box has opened&lt;/p&gt;
+
+&lt;p&gt;An alternative to circumventing this and obtaining a file location in a separate
+file without compromising file rendering on any mail server is to use the gem &lt;code class=&quot;highlighter-rouge&quot;&gt;premailer&lt;/code&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;https://github.com/premailer/premailer&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;It check the tags &lt;code class=&quot;highlighter-rouge&quot;&gt;style&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;link[rel=stylesheet]&lt;/code&gt; and convert them into inline attributes,
+besides converting relative url into absolute ones. To add into your project it’s just
+put &lt;code class=&quot;highlighter-rouge&quot;&gt;gem 'premailer'&lt;/code&gt; at your &lt;code class=&quot;highlighter-rouge&quot;&gt;Gemfile&lt;/code&gt; and runs &lt;code class=&quot;highlighter-rouge&quot;&gt;bundle install&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;To use the premailer when sending emails, you can pass a block with the desired format&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;mail&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+  &lt;span class=&quot;ss&quot;&gt;to: &lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'abc@dfg.com'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;ss&quot;&gt;subject: &lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'Utilizando premailer'&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;format&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+  &lt;span class=&quot;nb&quot;&gt;format&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;html&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+    &lt;span class=&quot;no&quot;&gt;Premailer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;render&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;template: &lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'caminho_do_template'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
+      &lt;span class=&quot;ss&quot;&gt;with_html_string: &lt;/span&gt;&lt;span class=&quot;kp&quot;&gt;true&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;to_inline_css&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Here i instantiate the class &lt;code class=&quot;highlighter-rouge&quot;&gt;Premailer&lt;/code&gt; passing the &lt;code class=&quot;highlighter-rouge&quot;&gt;render&lt;/code&gt; as argument and setting
+the attribute &lt;code class=&quot;highlighter-rouge&quot;&gt;with_html_string&lt;/code&gt; as true, because the render will return an string with
+the html content, by default the premailer receives the file path, i need to explicify
+that i will send the string content as argument, and finaly use the method &lt;code class=&quot;highlighter-rouge&quot;&gt;to_inline_css&lt;/code&gt; which
+will do all the magic.&lt;/p&gt;
+
+&lt;p&gt;This makes possible us to do something like&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-html5&quot;&gt;#customers {
+  font-family: &quot;Trebuchet MS&quot;, Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+#customers td, #customers th {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+#customers tr:nth-child(even){background-color: #f2f2f2;}
+
+#customers th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  background-color: #4CAF50;
+  color: white;
+}
+
+&amp;lt;table id=&quot;customers&quot;&amp;gt;
+  &amp;lt;tbody&amp;gt;
+    &amp;lt;tr&amp;gt;
+      &amp;lt;th&amp;gt;Company&amp;lt;/th&amp;gt;
+      &amp;lt;th&amp;gt;Contact&amp;lt;/th&amp;gt;
+      &amp;lt;th&amp;gt;Country&amp;lt;/th&amp;gt;
+    &amp;lt;/tr&amp;gt;
+    &amp;lt;tr&amp;gt;
+      &amp;lt;td&amp;gt;Alfreds Futterkiste&amp;lt;/td&amp;gt;
+      &amp;lt;td&amp;gt;Maria Anders&amp;lt;/td&amp;gt;
+      &amp;lt;td&amp;gt;Germany&amp;lt;/td&amp;gt;
+    &amp;lt;/tr&amp;gt;
+    &amp;lt;tr&amp;gt;
+      &amp;lt;td&amp;gt;Berglunds snabbköp&amp;lt;/td&amp;gt;
+      &amp;lt;td&amp;gt;Christina Berglund&amp;lt;/td&amp;gt;
+      &amp;lt;td&amp;gt;Sweden&amp;lt;/td&amp;gt;
+    &amp;lt;/tr&amp;gt;
+    &amp;lt;tr&amp;gt;
+      &amp;lt;td&amp;gt;Centro comercial Moctezuma&amp;lt;/td&amp;gt;
+      &amp;lt;td&amp;gt;Francisco Chang&amp;lt;/td&amp;gt;
+      &amp;lt;td&amp;gt;Mexico&amp;lt;/td&amp;gt;
+    &amp;lt;/tr&amp;gt;
+  &amp;lt;/tbody&amp;gt;
+&amp;lt;/table&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;When the mail is sent, the premailer is executed and do its magic, returning
+an code like the first example, the advantage is that whe mantaing the code legibility
+at the same time that we allow a mantaining less harder, besides we uses a good practice
+that is separate the css of the html.&lt;/p&gt;
+</description>
+        <pubDate>Tue, 25 Jun 2019 00:00:00 -0300</pubDate>
+        <link>http://localhost:4000/2019/06/25/optimizing-email-css-with-gem-premailer-rails/</link>
+        <guid isPermaLink="true">http://localhost:4000/2019/06/25/optimizing-email-css-with-gem-premailer-rails/</guid>
+      </item>
+    
 
     
       
@@ -149,6 +289,8 @@ p {
             <link>http://localhost:4000/about.html</link>
           </item>
         
+      
+    
       
     
       

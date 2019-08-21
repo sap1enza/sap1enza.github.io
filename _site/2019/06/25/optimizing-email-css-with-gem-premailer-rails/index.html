@@ -6,9 +6,9 @@
   <meta http-equiv='X-UA-Compatible' content='IE=edge'>
   <meta name='viewport' content='width=device-width, initial-scale=1'>
 
-  <title>About</title>
-  <meta name='description' content="">
-  <link rel='canonical' href="http://localhost:4000/about.html">
+  <title>Optimizing email CSS on rails with gem premailer</title>
+  <meta name='description' content="There are a few concerns when you develop an email marketing: use tables, takecare with the size of the images, send forms, pay attention at the compatibilit...">
+  <link rel='canonical' href="http://localhost:4000/2019/06/25/optimizing-email-css-with-gem-premailer-rails/">
   <link rel='alternate' type='application/rss+xml' title='Sapienza' href="http://localhost:4000/feed.xml">
 
   <style>
@@ -96,61 +96,176 @@
 
 </header>
 
-    <div class='o-wrapper'>
+    
+
+
+  <meta itemprop='og:image' content='http://localhost:4000/images/posts/email_marketing.png'>
+
+
+<div class='o-wrapper'>
 
   <div class='o-grid'>
     <div class='o-grid__col'>
-      <article class='c-post'>
-        <h1 class='c-post__title u-text-center'>About</h1>
+      <article class='c-post' itemscope itemtype='http://schema.org/BlogPosting'>
 
-        <div class='c-content'>
+        <h1 class='c-post__title u-text-center'>Optimizing email CSS on rails with gem premailer</h1>
+
+        <time class='c-post__date' datetime='2019-06-25T00:00:00-03:00' itemprop='datePublished'>25 Jun 2019</time>
+
+        <div class='c-content' itemprop='articleBody'>
           
+  <img src='/images/posts/email_marketing.png' class='c-post__image' alt='Optimizing email CSS on rails with gem premailer'>
 
-          <style>
-img {
-  border-radius: 50%;
-  margin: auto;
-}
 
-p {
-  margin: auto;
-}
+          <p>There are a few concerns when you develop an email marketing: use tables, take
+care with the size of the images, send forms, pay attention at the compatibility
+with older browsers or devices and avoid some tags, for example.</p>
 
-</style>
-
-<p><img src="/images/pages/about.png" alt="Lucas Sapienza" /></p>
-
-<hr />
-
-<blockquote>
-  <p><strong>Lucas Sapienza</strong></p>
-  <ul>
-    <li>Ruby on Rails Developer</li>
-    <li>Student at FIAP College, IT</li>
-  </ul>
-</blockquote>
-
-<hr />
-
-<p>Love by games and technology, student of IT at FIAP college, constantly studying through books and digital courses.</p>
-
-<hr />
+<p>Resuming, in email clients the HTML is changed by a pre-processor before it gets
+rendered, making a few changes which it worth to be aware of</p>
 
 <ul>
-  <li><strong>Paradigms and Practices:</strong> OOP, MVC, KISS, TDD</li>
-  <li><strong>Architecture:</strong> Microservices</li>
-  <li><strong>Databases:</strong> mySQL</li>
-  <li><strong>Back End:</strong> Ruby, PHP</li>
-  <li><strong>Front-End:</strong> HTML5, CSS3, jQuery</li>
-  <li><strong>Infrastructure:</strong> Docker</li>
-  <li><strong>Agile Frameworks:</strong> Kanban, Scrum</li>
+  <li>Remove or change HTML tags</li>
+  <li>Remove or change CSS</li>
+  <li>Change the entire structure of the document</li>
+  <li>Remove the whole javascript</li>
 </ul>
 
+<p>Taking <code class="highlighter-rouge">gmail</code> as example, it removs any tag <code class="highlighter-rouge">&lt;link&gt;</code> or <code class="highlighter-rouge">&lt;style&gt;</code> and change
+the entire structure of the document, this force us to write code like this</p>
+
+<pre><code class="language-html5">&lt;table id="customers" style="font-family: 'Trebuchet MS', Arial; border-collapse: collapse; width: 100%;"&gt;
+  &lt;tbody&gt;
+    &lt;tr style="background-color: #f2f2f2;"&gt;
+      &lt;th style="text-align: left; background-color: #4caf50; color: white; border: 1px solid #ddd; padding: 8px;"&gt;Company&lt;/th&gt;
+      &lt;th style="text-align: left; background-color: #4caf50; color: white; border: 1px solid #ddd; padding: 8px;"&gt;Contact&lt;/th&gt;
+      &lt;th style="text-align: left; background-color: #4caf50; color: white; border: 1px solid #ddd; padding: 8px;"&gt;Country&lt;/th&gt;
+    &lt;/tr&gt;
+    &lt;tr style="background-color: #f2f2f2;"&gt;
+      &lt;td style="border: 1px solid #ddd; padding: 8px;"&gt;Alfreds Futterkiste&lt;/td&gt;
+      &lt;td style="border: 1px solid #ddd; padding: 8px;"&gt;Maria Anders&lt;/td&gt;
+      &lt;td style="border: 1px solid #ddd; padding: 8px;"&gt;Germany&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style="border: 1px solid #ddd; padding: 8px;"&gt;Berglunds snabbköp&lt;/td&gt;
+      &lt;td style="border: 1px solid #ddd; padding: 8px;"&gt;Christina Berglund&lt;/td&gt;
+      &lt;td style="border: 1px solid #ddd; padding: 8px;"&gt;Sweden&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr style="background-color: #f2f2f2;"&gt;
+      &lt;td style="border: 1px solid #ddd; padding: 8px;"&gt;Centro comercial Moctezuma&lt;/td&gt;
+      &lt;td style="border: 1px solid #ddd; padding: 8px;"&gt;Francisco Chang&lt;/td&gt;
+      &lt;td style="border: 1px solid #ddd; padding: 8px;"&gt;Mexico&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+</code></pre>
+
+<p>The problem is that it ruins the legibility and maintenance of the code,
+just imagine a scenario a little bit more complex and the need of change the style
+of a class, the result: the pandora’s box has opened</p>
+
+<p>An alternative to circumventing this and obtaining a file location in a separate
+file without compromising file rendering on any mail server is to use the gem <code class="highlighter-rouge">premailer</code></p>
+
+<ul>
+  <li>https://github.com/premailer/premailer</li>
+</ul>
+
+<p>It check the tags <code class="highlighter-rouge">style</code> and <code class="highlighter-rouge">link[rel=stylesheet]</code> and convert them into inline attributes,
+besides converting relative url into absolute ones. To add into your project it’s just
+put <code class="highlighter-rouge">gem 'premailer'</code> at your <code class="highlighter-rouge">Gemfile</code> and runs <code class="highlighter-rouge">bundle install</code>.</p>
+
+<p>To use the premailer when sending emails, you can pass a block with the desired format</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">mail</span><span class="p">(</span>
+  <span class="ss">to: </span><span class="s1">'abc@dfg.com'</span><span class="p">,</span>
+  <span class="ss">subject: </span><span class="s1">'Utilizando premailer'</span>
+<span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="nb">format</span><span class="o">|</span>
+  <span class="nb">format</span><span class="p">.</span><span class="nf">html</span> <span class="k">do</span>
+    <span class="no">Premailer</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span>
+      <span class="n">render</span><span class="p">(</span><span class="ss">template: </span><span class="s1">'caminho_do_template'</span><span class="p">),</span>
+      <span class="ss">with_html_string: </span><span class="kp">true</span>
+    <span class="p">).</span><span class="nf">to_inline_css</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>Here i instantiate the class <code class="highlighter-rouge">Premailer</code> passing the <code class="highlighter-rouge">render</code> as argument and setting
+the attribute <code class="highlighter-rouge">with_html_string</code> as true, because the render will return an string with
+the html content, by default the premailer receives the file path, i need to explicify
+that i will send the string content as argument, and finaly use the method <code class="highlighter-rouge">to_inline_css</code> which
+will do all the magic.</p>
+
+<p>This makes possible us to do something like</p>
+
+<pre><code class="language-html5">#customers {
+  font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+#customers td, #customers th {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+#customers tr:nth-child(even){background-color: #f2f2f2;}
+
+#customers th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  background-color: #4CAF50;
+  color: white;
+}
+
+&lt;table id="customers"&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;th&gt;Company&lt;/th&gt;
+      &lt;th&gt;Contact&lt;/th&gt;
+      &lt;th&gt;Country&lt;/th&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Alfreds Futterkiste&lt;/td&gt;
+      &lt;td&gt;Maria Anders&lt;/td&gt;
+      &lt;td&gt;Germany&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Berglunds snabbköp&lt;/td&gt;
+      &lt;td&gt;Christina Berglund&lt;/td&gt;
+      &lt;td&gt;Sweden&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Centro comercial Moctezuma&lt;/td&gt;
+      &lt;td&gt;Francisco Chang&lt;/td&gt;
+      &lt;td&gt;Mexico&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+</code></pre>
+
+<p>When the mail is sent, the premailer is executed and do its magic, returning
+an code like the first example, the advantage is that whe mantaing the code legibility
+at the same time that we allow a mantaining less harder, besides we uses a good practice
+that is separate the css of the html.</p>
+
         </div>
+
+        <div class='c-tags'>
+          
+            <a href='/tag/ruby'>ruby</a>
+          
+            <a href='/tag/rails'>rails</a>
+          
+            <a href='/tag/improvements'>improvements</a>
+          
+        </div>
+
       </article>
+
     </div>
   </div>
-
 </div>
 
     <footer class='c-footer'>
