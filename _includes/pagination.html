@@ -1,13 +1,17 @@
-<nav class="pagination" role="pagination">
-    {% if paginator.previous_page %}
-        {% if paginator.previous_page == 1 %}
-            <a class="newer-posts" href="/" title="Previous Page">&laquo; Newer Posts</a>
-        {% else %}
-            <a class="newer-posts" href="/page{{ paginator.previous_page }}/" title="Previous Page">&laquo; Newer Posts</a>
-      {% endif %}
-    {% endif %}
-    <span class="page-number"> Page {{paginator.page}} of {{paginator.total_pages}} </span>
-    {% if paginator.next_page %} 
-        <a class="older-posts" href="/page{{ paginator.next_page }}/" title="Next Page">Older Posts &raquo;</a>
-    {% endif %} 
-</nav>
+{% if paginator.previous_page %}
+  <div class='o-grid__col o-grid__col--2-4-s'>
+    <a class='c-pagination' href='{{ paginator.previous_page_path | prepend: site.baseurl }}'>
+      <div class='c-pagination__icon c-pagination__icon--prev' data-icon='ei-chevron-left'></div>
+      <span class='c-pagination__text c-pagination__text--prev'>Previous</span>
+    </a>
+  </div>
+{% endif %}
+
+{% if paginator.next_page %}
+  <div class='o-grid__col o-grid__col--end o-grid__col--2-4-s u-text-right'>
+    <a class='c-pagination' href='{{ paginator.next_page_path | prepend: site.baseurl }}'>
+      <span class='c-pagination__text c-pagination__text--next'>Next</span>
+      <div class='c-pagination__icon c-pagination__icon--next' data-icon='ei-chevron-right'></div>
+    </a>
+  </div>
+{% endif %}
