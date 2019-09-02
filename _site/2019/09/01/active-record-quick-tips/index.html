@@ -6,9 +6,9 @@
   <meta http-equiv='X-UA-Compatible' content='IE=edge'>
   <meta name='viewport' content='width=device-width, initial-scale=1'>
 
-  <title>Sapienza</title>
-  <meta name='description' content="">
-  <link rel='canonical' href="http://localhost:4000/tag/ruby/">
+  <title>ActiveRecord - Quick Tips</title>
+  <meta name='description' content="I will use the data from an dump with 100.000 registers">
+  <link rel='canonical' href="http://localhost:4000/2019/09/01/active-record-quick-tips/">
   <link rel='alternate' type='application/rss+xml' title='Sapienza' href="http://localhost:4000/feed.xml">
 
   <style>
@@ -96,76 +96,141 @@
 
 </header>
 
-    <div class='o-wrapper'>
+    
+
+
+  <meta itemprop='og:image' content='http://localhost:4000/images/posts/rails.jpg'>
+
+
+<div class='o-wrapper'>
 
   <div class='o-grid'>
     <div class='o-grid__col'>
-      <h4>ruby</h4>
+      <article class='c-post' itemscope itemtype='http://schema.org/BlogPosting'>
+
+        <h1 class='c-post__title u-text-center'>ActiveRecord - Quick Tips</h1>
+
+        <time class='c-post__date' datetime='2019-09-01T00:00:00-03:00' itemprop='datePublished'>01 Sep 2019</time>
+
+        <div class='c-content' itemprop='articleBody'>
+          
+  <img src='/images/posts/rails.jpg' class='c-post__image' alt='ActiveRecord - Quick Tips'>
+
+
+          <p>I will use the data from an dump with 100.000 registers</p>
+
+<h2 id="pluck-vs-map">pluck vs. map</h2>
+
+<p>Map is useful for arrays, and that is it. Rails select all columns to instantiate an object for each row</p>
+
+<p>Pluck delegates that job to the SQL, which turns the process way much faster and effective.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Benchmark</span><span class="p">.</span><span class="nf">ms</span> <span class="p">{</span> <span class="no">Purchase</span><span class="p">.</span><span class="nf">all</span><span class="p">.</span><span class="nf">map</span><span class="p">(</span><span class="o">&amp;</span><span class="ss">:id</span><span class="p">)</span> <span class="p">}</span>
+<span class="o">=&gt;</span> <span class="mf">23967.25999999944</span>
+
+<span class="no">Benchmark</span><span class="p">.</span><span class="nf">ms</span> <span class="p">{</span> <span class="no">Purchase</span><span class="p">.</span><span class="nf">pluck</span><span class="p">(</span><span class="ss">:id</span><span class="p">)</span> <span class="p">}</span>
+<span class="o">=&gt;</span> <span class="mf">425.65599999943515</span>
+</code></pre></div></div>
+
+<p>If you already had an array with the objects, maybe it is better to use the map than touch the database again</p>
+
+<h2 id="uniq">uniq</h2>
+
+<p>Order makes difference</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Benchmark</span><span class="p">.</span><span class="nf">ms</span> <span class="p">{</span> <span class="no">Purchase</span><span class="p">.</span><span class="nf">pluck</span><span class="p">(</span><span class="ss">:id</span><span class="p">).</span><span class="nf">uniq</span> <span class="p">}</span>
+ <span class="o">=&gt;</span> <span class="mf">1645.4709999998158</span>
+
+<span class="no">Benchmark</span><span class="p">.</span><span class="nf">ms</span> <span class="p">{</span> <span class="no">Purchase</span><span class="p">.</span><span class="nf">uniq</span><span class="p">.</span><span class="nf">pluck</span><span class="p">(</span><span class="ss">:id</span><span class="p">)</span> <span class="p">}</span>
+ <span class="o">=&gt;</span> <span class="mf">446.65100000020175</span>
+</code></pre></div></div>
+
+<p>At the first case, the pluck returns an array with an id for each row from the Purchases table, the duplicated are then filtered using the <code class="highlighter-rouge">Array#uniq</code></p>
+
+<p>In the second the uniq uses the <code class="highlighter-rouge">ActiveRecord::QueryMethods#uniq</code> that filter directly in the SQL with DISTINCT</p>
+
+<h1 id="find_each-vs-find_in_batches-vs-each">find_each vs. find_in_batches vs. Each</h1>
+
+<p>For iterations over a small number of objects, using each solves it. But when the talk about thousands or millions of objects, using 
+each becomes inviable taking in consideration that it loads all objects to just them iterate over it.</p>
+
+<p>The solution is to “broke” that in blocks</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Purchase</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="ss">confirmed: </span><span class="kp">false</span><span class="p">).</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">purchase</span><span class="o">|</span>
+  <span class="n">purchase</span><span class="p">.</span><span class="nf">confirm!</span>
+<span class="k">end</span>
+
+
+<span class="no">Purchase</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="ss">confirmed: </span><span class="kp">false</span><span class="p">).</span><span class="nf">find_in_batches</span> <span class="k">do</span> <span class="o">|</span><span class="n">group</span><span class="o">|</span>
+  <span class="n">group</span><span class="p">.</span><span class="nf">each</span> <span class="p">{</span> <span class="o">|</span><span class="n">purchase</span><span class="o">|</span> <span class="n">purchase</span><span class="p">.</span><span class="nf">confirm!</span> <span class="p">}</span>
+<span class="k">end</span>
+
+<span class="no">Purchase</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="ss">confirmed: </span><span class="kp">false</span><span class="p">).</span><span class="nf">find_each</span> <span class="k">do</span> <span class="o">|</span><span class="n">puchase</span><span class="o">|</span> 
+  <span class="n">purchase</span><span class="p">.</span><span class="nf">confirm!</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p><code class="highlighter-rouge">each</code> will block the row UNTIL gets it done, it can be a trouble if we are talking about a big table or if the table is used in other scenarios as well</p>
+
+<p>Using the <code class="highlighter-rouge">find_in_batches</code>, it will make the queries by blocks of 1000 ( default, but can be changed ), in other words it will no longer block the table to other queries</p>
+
+<p><code class="highlighter-rouge">find_each</code> is basically an shortcut for <code class="highlighter-rouge">find_in_batches</code> that dont use the scope of the blocks returned</p>
+
+<h2 id="includes">includes</h2>
+
+<p>Nice to avoid N+1 queries, since it also load the relation records</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Purchase</span><span class="p">.</span><span class="nf">includes</span><span class="p">(</span><span class="ss">:person</span><span class="p">).</span><span class="nf">map</span> <span class="p">{</span> <span class="o">|</span><span class="n">purchase</span><span class="o">|</span> <span class="n">purchase</span><span class="p">.</span><span class="nf">person</span><span class="p">.</span><span class="nf">id</span> <span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="joins-vs-includes">joins vs includes</h2>
+
+<p>Joins is a good one if you are just filtering through the results, not accessing the records from the relationship directly. ( It dont avoid N+1 queries )</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Purchase</span><span class="p">.</span><span class="nf">joins</span><span class="p">(</span><span class="ss">:person</span><span class="p">).</span><span class="nf">where</span><span class="p">(</span><span class="ss">:people</span> <span class="o">=&gt;</span> <span class="p">{</span><span class="ss">confirmed: </span><span class="kp">true</span><span class="p">}).</span><span class="nf">map</span> <span class="p">{</span> <span class="o">|</span><span class="n">purchase</span><span class="o">|</span> <span class="n">purchase</span><span class="p">.</span><span class="nf">id</span> <span class="p">}</span>
+</code></pre></div></div>
+
+<p>Otherwise, if will access the associations directly its a good one to use includes since it avoids N+1 queries</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Purchase</span><span class="p">.</span><span class="nf">includes</span><span class="p">(</span><span class="ss">:person</span><span class="p">).</span><span class="nf">map</span> <span class="p">{</span> <span class="o">|</span><span class="n">purchase</span><span class="o">|</span> <span class="n">purchase</span><span class="p">.</span><span class="nf">person</span><span class="p">.</span><span class="nf">id</span> <span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="exists-vs-any">exists vs any</h2>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Benchmark</span><span class="p">.</span><span class="nf">ms</span> <span class="p">{</span> <span class="no">Purchase</span><span class="p">.</span><span class="nf">any?</span> <span class="p">}</span>
+ <span class="o">=&gt;</span> <span class="mf">31.580000009853393</span>
+
+<span class="no">Benchmark</span><span class="p">.</span><span class="nf">ms</span> <span class="p">{</span> <span class="no">Purchase</span><span class="p">.</span><span class="nf">exists?</span> <span class="p">}</span>
+ <span class="o">=&gt;</span> <span class="mf">3.292000008514151</span>
+</code></pre></div></div>
+
+<p><code class="highlighter-rouge">any?</code>:  accepts a block and retrieves the records in the relation with it  ( calls #to_a, calls the block, hits it with <code class="highlighter-rouge">Enumerable#any?</code> ), without a block its the same as <code class="highlighter-rouge">!empty?</code> and count the records of the relation</p>
+
+<p>As few examples earlier, the <code class="highlighter-rouge">exists?</code> delegate it to the SQL setting a <code class="highlighter-rouge">LIMIT 1 </code> and becomes way faster.</p>
+
+<h1 id="group-counting">Group Counting</h1>
+
+<p>Interesting way to get the count based on attributes of the model.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Purchase</span><span class="p">.</span><span class="nf">group</span><span class="p">(</span><span class="ss">:signed_contract</span><span class="p">).</span><span class="nf">count</span>
+ <span class="o">=&gt;</span> <span class="p">{</span><span class="kp">false</span><span class="o">=&gt;</span><span class="mi">1527</span><span class="p">,</span> <span class="kp">true</span><span class="o">=&gt;</span><span class="mi">98484</span><span class="p">}</span>
+</code></pre></div></div>
+
+        </div>
+
+        <div class='c-tags'>
+          
+            <a href='/tag/ruby'>ruby</a>
+          
+            <a href='/tag/rails'>rails</a>
+          
+            <a href='/tag/activerecord'>activerecord</a>
+          
+        </div>
+
+      </article>
+
     </div>
-  </div>
-
-  <div class='o-grid'>
-    
-      <div class='o-grid__col'>
-
-  <a href='/2019/09/01/active-record-quick-tips/' class='c-post-card  c-post-card--first  '>
-    <h3 class='c-post-card__title'>ActiveRecord - Quick Tips</h3>
-
-    
-      <img src='/images/posts/rails.jpg' class='c-post__image' alt='ActiveRecord - Quick Tips'>
-    
-
-    <p class='c-post-card__excerpt u-font-medium'>
-      I will use the data from an dump with 100.000 registers pluck vs. map Map is useful for arrays, and that is it. Rails select all columns to instantiate an object for each row Pluck...
-    </p>
-
-    <span class='c-post-card__date'>01 Sep 2019</span>
-  </a>
-
-</div>
-    
-      <div class='o-grid__col'>
-
-  <a href='/2019/08/21/parsimony-with-activerecord-callbacks/' class='c-post-card  '>
-    <h3 class='c-post-card__title'>Parsimony with ActiveRecord callbacks</h3>
-
-    
-      <img src='/images/posts/callbacks.png' class='c-post__image' alt='Parsimony with ActiveRecord callbacks'>
-    
-
-    <p class='c-post-card__excerpt u-font-medium'>
-      It’s not rare to see someone associating activerecord callbacks with something bad or wrong, avoiding at all cost using them and thinking in other ways to achieve the desired goal, although i believe that nothing...
-    </p>
-
-    <span class='c-post-card__date'>21 Aug 2019</span>
-  </a>
-
-</div>
-    
-      <div class='o-grid__col'>
-
-  <a href='/2019/06/25/optimizing-email-css-with-gem-premailer-rails/' class='c-post-card   c-post-card--last '>
-    <h3 class='c-post-card__title'>Optimizing email CSS on rails with gem premailer</h3>
-
-    
-      <img src='/images/posts/email_marketing.png' class='c-post__image' alt='Optimizing email CSS on rails with gem premailer'>
-    
-
-    <p class='c-post-card__excerpt u-font-medium'>
-      There are a few concerns when you develop an email marketing: use tables, take care with the size of the images, send forms, pay attention at the compatibility with older browsers or devices and avoid...
-    </p>
-
-    <span class='c-post-card__date'>25 Jun 2019</span>
-  </a>
-
-</div>
-    
-  </div>
-
-  <div class='o-grid'>
-    
-
-
   </div>
 </div>
 
