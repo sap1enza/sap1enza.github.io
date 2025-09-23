@@ -5,13 +5,13 @@ title: About
 <style>
 img {
   border-radius: 50%;
+  height: 200px;
   margin: auto;
 }
 
 p {
-  margin: auto;
+  font-size: 1rem;
 }
-
 </style>
 
 <img src="/images/pages/about.png" alt="Lucas Sapienza">
