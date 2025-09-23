@@ -80,9 +80,9 @@ PLATFORMS
 
 DEPENDENCIES
   bundler
-  jekyll
+  jekyll (~> 4.0)
   jekyll-paginate
   jekyll-tagging
 
 BUNDLED WITH
-   2.6.9
+   1.17.3
