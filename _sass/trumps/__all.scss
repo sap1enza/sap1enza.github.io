@@ -2,8 +2,8 @@
 // Trumbs
 // *----------------------------------*/
 
-@import 'hide';
-@import 'type';
-@import 'align';
-@import 'layout';
-@import 'clearfix';
+@use 'hide' as hide;
+@use 'type' as type;
+@use 'align' as align;
+@use 'layout' as layout;
+@use 'clearfix' as clearfix;

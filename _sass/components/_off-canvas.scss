@@ -1,6 +1,10 @@
 /*------------------------------------*\
   Components > Off Canvas
 \*------------------------------------*/
+@use '../settings/colors' as *;
+@use '../settings/global' as *;
+@use '../settings/spaces' as *;
+@use '../tools/functions' as *;
 
 $off-canvas-width: 300px;
 

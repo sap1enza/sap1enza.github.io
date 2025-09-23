@@ -1,6 +1,10 @@
 /*------------------------------------*\
   Elements > code & pre
 \*------------------------------------*/
+@use '../settings/colors' as *;
+@use '../settings/spaces' as *;
+@use '../settings/type' as *;
+@use '../tools/functions' as *;
 
 pre,
 code {

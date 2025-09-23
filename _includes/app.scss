@@ -3,32 +3,32 @@
 // *------------------------------------*/
 
 // TOOLS
-@import 'tools/_all';
+@use 'tools/_all' as tools;
 
 
 // SETTINGS
-@import 'settings/_all';
+@use 'settings/_all' as settings;
 
 
 // GENERIC
-@import 'generic/_all';
+@use 'generic/_all' as generic;
 
 
 // VENDOR
-@import 'vendor/_all';
+@use 'vendor/_all' as vendor;
 
 
 // ELEMENTS
-@import 'elements/_all';
+@use 'elements/_all' as elements;
 
 
 // OBJECTS
-@import 'objects/_all';
+@use 'objects/_all' as objects;
 
 
 // Components
-@import 'components/_all';
+@use 'components/_all' as components;
 
 
 // TRUMPS
-@import 'trumps/_all';
+@use 'trumps/_all' as trumps;

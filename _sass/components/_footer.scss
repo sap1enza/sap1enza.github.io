@@ -1,6 +1,9 @@
 /*------------------------------------*\
   Components > Footer
 \*------------------------------------*/
+@use '../settings/colors' as *;
+@use '../settings/spaces' as *;
+@use '../tools/functions' as *;
 
 .c-footer {
   padding: double($base-spacing-unit) 0;

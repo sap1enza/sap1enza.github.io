@@ -1,6 +1,8 @@
 /*------------------------------------*\
   Generic > Shared
 \*------------------------------------*/
+@use '../settings/spaces' as *;
+@use '../tools/functions' as *;
 
 /**
  * Shared declarations for certain elements.

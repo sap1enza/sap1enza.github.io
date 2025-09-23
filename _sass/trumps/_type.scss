@@ -1,6 +1,7 @@
 /*------------------------------------*\
   Trumbs > Typography
 \*------------------------------------*/
+@use '../settings/type' as *;
 
 .u-font-medium  {
   font-size: $font-size-medium;

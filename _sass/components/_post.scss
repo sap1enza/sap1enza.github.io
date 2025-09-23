@@ -1,6 +1,12 @@
 /*------------------------------------*\
   Components > Post
 \*------------------------------------*/
+@use '../settings/breakpoints' as *;
+@use '../settings/colors' as *;
+@use '../settings/spaces' as *;
+@use '../settings/type' as *;
+@use '../tools/functions' as *;
+@use '../tools/mq' as *;
 
 .c-post {
   margin: 0 auto;

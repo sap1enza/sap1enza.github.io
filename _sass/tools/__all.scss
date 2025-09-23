@@ -2,6 +2,6 @@
 // Tools
 // *----------------------------------*/
 
-@import 'mq';
-@import 'mixins';
-@import 'functions';
+@use 'mq' as mq;
+@use 'mixins' as mixins;
+@use 'functions' as functions;

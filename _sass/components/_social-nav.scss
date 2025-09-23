@@ -1,6 +1,9 @@
 /*------------------------------------*\
   Components > Social Navigation
 \*------------------------------------*/
+@use '../settings/colors' as *;
+@use '../settings/global' as *;
+@use '../tools/mixins' as *;
 
 .c-social-nav {
   &__item {

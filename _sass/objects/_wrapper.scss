@@ -1,6 +1,8 @@
 /*------------------------------------*\
   Objects > Wrapper
 \*------------------------------------*/
+@use '../settings/spaces' as *;
+@use '../tools/functions' as *;
 
 .o-wrapper {
   padding: double($base-spacing-unit) 0;

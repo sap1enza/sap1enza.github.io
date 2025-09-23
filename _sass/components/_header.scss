@@ -1,6 +1,8 @@
 /*------------------------------------*\
   Components > Header
 \*------------------------------------*/
+@use '../settings/colors' as *;
+@use '../settings/spaces' as *;
 
 .c-header {
   &__inner {

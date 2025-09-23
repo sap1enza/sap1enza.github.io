@@ -1,6 +1,11 @@
 /*------------------------------------*\
   Elements > Inputs
 \*------------------------------------*/
+@use '../settings/colors' as *;
+@use '../settings/global' as *;
+@use '../settings/spaces' as *;
+@use '../settings/type' as *;
+@use '../tools/mixins' as *;
 
 $input-border: $color-border;
 $input-border-focused: $color-text;

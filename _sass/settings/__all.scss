@@ -2,8 +2,8 @@
 //  Settings
 // *----------------------------------*/
 
-@import 'spaces';
-@import 'colors';
-@import 'type';
-@import 'breakpoints';
-@import 'global';
+@use 'spaces' as spaces;
+@use 'colors' as colors;
+@use 'type' as type;
+@use 'breakpoints' as breakpoints;
+@use 'global' as global;

@@ -2,7 +2,7 @@
 // Generic
 // *----------------------------------*/
 
-@import 'box-sizing';
-@import 'normalize';
-@import 'reset';
-@import 'shared';
+@use 'box-sizing' as box-sizing;
+@use 'normalize' as normalize;
+@use 'reset' as reset;
+@use 'shared' as shared;

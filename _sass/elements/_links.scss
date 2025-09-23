@@ -1,6 +1,9 @@
 /*------------------------------------*\
   Elements > Links
 \*------------------------------------*/
+@use '../settings/colors' as *;
+@use '../settings/global' as *;
+@use '../tools/mixins' as *;
 
 a {
   text-decoration: none;

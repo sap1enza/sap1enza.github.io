@@ -1,6 +1,12 @@
 /*------------------------------------*\
   Components > Buttons
 \*------------------------------------*/
+@use '../settings/colors' as *;
+@use '../settings/global' as *;
+@use '../settings/spaces' as *;
+@use '../settings/type' as *;
+@use '../tools/functions' as *;
+@use '../tools/mixins' as *;
 
 $btn-bg:       #207cdf;
 $btn-bg-hover: #238cf6;

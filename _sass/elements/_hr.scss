@@ -1,6 +1,9 @@
 /*------------------------------------*\
   Elements > hr
 \*------------------------------------*/
+@use '../settings/colors' as *;
+@use '../settings/spaces' as *;
+@use '../tools/functions' as *;
 
 hr {
   height: 1px;

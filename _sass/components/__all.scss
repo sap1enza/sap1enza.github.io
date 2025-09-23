@@ -2,16 +2,16 @@
 // Components
 // *------------------------------------*/
 
-@import 'header';
-@import 'logo';
-@import 'nav';
-@import 'off-canvas';
-@import 'tags';
-@import 'buttons';
-@import 'post-card';
-@import 'pagination';
-@import 'post';
-@import 'content';
-@import 'embed';
-@import 'social-nav';
-@import 'footer';
+@use 'header' as header;
+@use 'logo' as logo;
+@use 'nav' as nav;
+@use 'off-canvas' as off-canvas;
+@use 'tags' as tags;
+@use 'buttons' as buttons;
+@use 'post-card' as post-card;
+@use 'pagination' as pagination;
+@use 'post' as post;
+@use 'content' as content;
+@use 'embed' as embed;
+@use 'social-nav' as social-nav;
+@use 'footer' as footer;

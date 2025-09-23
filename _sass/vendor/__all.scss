@@ -2,5 +2,5 @@
 // Vendor
 // *----------------------------------*/
 
-@import 'evil-icons';
-@import 'syntax_highlighting';
+@use 'evil-icons' as evil-icons;
+@use 'syntax_highlighting' as syntax_highlighting;

@@ -1,6 +1,8 @@
 /*------------------------------------*\
   Components > Content
 \*------------------------------------*/
+@use '../settings/colors' as *;
+@use '../tools/mixins' as *;
 
 .c-content {
   a:not(.c-btn) {

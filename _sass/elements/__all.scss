@@ -2,12 +2,12 @@
 // Elements
 // *----------------------------------*/
 
-@import 'body';
-@import 'fonts';
-@import 'links';
-@import 'image';
-@import 'hr';
-@import 'type';
-@import 'blockquote';
-@import 'code';
-@import 'input';
+@use 'body' as body;
+@use 'fonts' as fonts;
+@use 'links' as links;
+@use 'image' as image;
+@use 'hr' as hr;
+@use 'type' as type;
+@use 'blockquote' as blockquote;
+@use 'code' as code;
+@use 'input' as input;

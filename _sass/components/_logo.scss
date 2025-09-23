@@ -1,6 +1,10 @@
 /*------------------------------------*\
   Components > Logo
 \*------------------------------------*/
+@use '../settings/colors' as *;
+@use '../settings/global' as *;
+@use '../settings/type' as *;
+@use '../tools/mixins' as *;
 
 .c-logo {
   &__link {

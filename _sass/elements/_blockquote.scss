@@ -1,6 +1,8 @@
 /*------------------------------------*\
   Elements > Blockquote
 \*------------------------------------*/
+@use '../settings/colors' as *;
+@use '../settings/spaces' as *;
 
 blockquote {
   padding-left: $base-spacing-unit;

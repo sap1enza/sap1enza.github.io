@@ -1,6 +1,8 @@
 /*------------------------------------*\
   Elements > Page
 \*------------------------------------*/
+@use '../settings/colors' as *;
+@use '../settings/type' as *;
 
 body {
   color: $color-text;
